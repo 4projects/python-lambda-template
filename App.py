@@ -1,11 +1,13 @@
 import boto3
 import requests
 import uuid 
+from time import time
+from datetime import datetime
 
 import helpers
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('bus-data')
+table = dynamodb.Table('bus-time-series')
 
 
 def handler(event, context):
@@ -15,7 +17,8 @@ def handler(event, context):
     # converts float/decimal points
     data = [ helpers.dumps(i) for i in d]
     snapshot = {
-        'route': str(uuid.uuid4()),
+        'date': str(datetime.now()),
+        'time': int(time()),
         'data': data
     }
     table.put_item(Item=snapshot)
